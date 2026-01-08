@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ========================================================= -->
+    <!-- SEO Optimized Title & Description -->
+    <!-- ========================================================= -->
+    <title>6621 Interest Calculator (IRS §6621 / §6622) – PFIC & Form 8621</title>
+
+    <meta name="description"
+        content="Calculate IRS interest under §6621 using daily compounding and quarterly rates. Designed for PFIC §1291 and Form 8621 interest verification.">
+
+    <link rel="canonical" href="https://pfic.xyz/tools/irs-6621-interest-calculator/" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="../../css/articles.css">
+
+    <!-- Calculator Specific Styles -->
+    <link rel="stylesheet" href="calculator.css">
+    <!-- Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EC7WB61NXH"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-EC7WB61NXH');
+    </script>
+</head>
+
+<body>
+
+    <!-- =================================================================
+       1. Header
+       ================================================================= -->
+    <!-- HEADER_START -->
+    <header>
+        <div class="site-title-container">
+            <div class="site-title">PFIC Calculator</div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+                <span class="hamburger"></span>
+            </button>
+        </div>
+        <nav class="top-nav" id="topNav">
+            <a href="/">Home</a>
+            <a href="/articles/">Articles</a>
+            <a href="/user-guide/">User Guide</a>
+        </nav>
+    </header>
+    <!-- HEADER_END --><!-- =================================================================
+       2. Main Content
+       ================================================================= -->
+    <main style="max-width: 960px; margin: 0 auto;">
+
+        <!-- Tool Header -->
+        <section style="margin-bottom: 40px; text-align: center;">
+            <h1>6621 Interest Calculator (IRC §6621 / §6622)</h1>
+            <p style="font-size: 1.2rem; color: #64748b; margin-top: -10px;">
+                <strong>6621 interest calculator</strong> that computes
+                <strong>IRS underpayment interest</strong> under
+                <strong>IRC §6621 and §6622</strong>,
+                commonly used for <strong>PFIC §1291</strong> and
+                <strong>Form 8621 Line 16</strong>.
+            </p>
+            <p
+                style="font-size: 0.95rem; color: #475569; margin-top: 15px; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.5;">
+                <strong>Instructions:</strong>
+                For <strong>IRC §1291</strong>, select <strong>Allocated Year</strong> and <strong>Return
+                    Year</strong>.<br>
+                The tool auto-fills <strong>statutory dates</strong> and computes the <strong>Accrual
+                    Factor</strong>.<br>
+                Enter <strong>Deferred Tax</strong> to view interest.
+                Dates are <strong>adjustable</strong> for other calculation needs.
+            </p>
+        </section>
+
+        <!-- Calculator UI -->
+        <section class="calc-card">
+            <!-- Consolidated Grid for Inputs -->
+            <div class="calc-grid">
+                <div class="item-year-allocated">
+                    <label class="calc-label" for="taxableYear" title="Tax year allocated under IRC §1291">Allocated
+                        Year</label>
+                    <div class="select-wrapper">
+                        <select id="taxableYear" class="calc-select"></select>
+                    </div>
+                </div>
+
+                <div class="item-year-return">
+                    <label class="calc-label" for="filingYear"
+                        title="Current return year through which interest accrues">Return Year</label>
+                    <div class="select-wrapper">
+                        <select id="filingYear" class="calc-select"></select>
+                    </div>
+                </div>
+
+                <div class="item-deferred-tax">
+                    <label class="calc-label" for="principal" title="Tax allocated to prior PFIC years">Deferred Tax
+                        ($)</label>
+                    <input type="number" id="principal" class="calc-input" placeholder="e.g. 10000" min="0" step="0.01"
+                        value="1">
+                </div>
+
+                <div class="item-due-date">
+                    <label class="calc-label" for="startDate" title="Statutory due date (without extensions)">Due
+                        Date</label>
+                    <input type="text" id="startDate" class="calc-input" placeholder="YYYY-MM-DD">
+                </div>
+
+                <div class="item-payment-date">
+                    <label class="calc-label" for="endDate" title="Date tax is treated as paid">Payment Date</label>
+                    <input type="text" id="endDate" class="calc-input" placeholder="YYYY-MM-DD">
+                </div>
+
+                <div class="item-accrual-factor">
+                    <label class="calc-label" title="Cumulative daily compounded IRS interest factor">Accrual
+                        Factor</label>
+                    <input type="text" id="interestFactor" class="calc-input calc-output-field" readonly
+                        placeholder="— calculated —">
+                </div>
+            </div>
+            <!-- Results Area -->
+            <div id="resultsArea" class="hidden">
+                <div class="result-summary">
+                    <div>
+                        <div class="result-item-label">Total Deferred Interest</div>
+                        <div class="result-item-value" id="totalInterest">$0.00</div>
+                    </div>
+                    <div>
+                        <div class="result-item-label">Total Tax + Interest</div>
+                        <div class="result-item-value" id="totalDue">$0.00</div>
+                    </div>
+                </div>
+
+                <div class="details-table-container">
+                    <table class="details-table" id="detailsTable">
+                        <thead>
+                            <tr>
+                                <th>Period (Quarterly)</th>
+                                <th>Rate</th>
+                                <th>Days</th>
+                                <th>Interest Added</th>
+                                <th>Running Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Info / Context -->
+        <section style="margin-top: 60px; color: #64748b; font-size: 0.95rem;">
+            <h3>About this Tool</h3>
+            <p>
+                <strong>How is IRS interest calculated under §6621?</strong><br>
+                IRS underpayment interest is calculated using daily compounding under IRC §6622,
+                based on quarterly rates published under IRC §6621(a)(2).
+            </p>
+            <p>
+                This calculator implements the specific interest rules required for <strong>PFIC Excess
+                    Distributions</strong> under IRC §1291(c)(3).
+            </p>
+            <ul style="margin-top: 10px;">
+                <li><strong>IRC §6621(a)(2):</strong> Uses the federal short-term underpayment rate plus 3 percentage
+                    points.</li>
+                <li><strong>IRC §6622:</strong> Interest is compounded <strong>daily</strong>.</li>
+                <li><strong>IRC §7503:</strong> Automatically adjusts start/end dates if they fall on a weekend or legal
+                    holiday.</li>
+                <li>
+                    <strong>COVID-19 Postponements:</strong>
+                    Reflects the general due date postponements announced in IRS Notice 2020-23 and Notice 2021-21
+                    where applicable. Users should independently verify applicability to their specific facts.
+                </li>
+            </ul>
+            <div class="pfic-note" style="margin-top: 30px;">
+                <strong>Note on Accuracy:</strong>
+                This tool is designed to replicate the standard IRS interest computation methodology
+                used for the "Interest Charge" reported on <strong>Form 8621, Line 16</strong>,
+                based on published rates and statutory due dates.
+                Actual filing results may vary depending on elections, extensions, or taxpayer-specific facts.
+            </div>
+
+            <!-- Historical Rates Table (Collapsible) -->
+            <details class="faq" style="margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                <summary style="background:none; padding-left:0; font-size:1.1rem;">
+                    View Historical IRS §6621 Interest Rates (1987–Present)
+                </summary>
+                <div style="margin-top: 20px; overflow-x: auto;">
+                    <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 16px;">
+                        👉 Rates shown are the <strong>quarterly short-term underpayment rates</strong> (IRC
+                        §6621(a)(2)).
+                    </p>
+                    <table class="details-table" id="ratesTable">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Q1 (Jan-Mar)</th>
+                                <th>Q2 (Apr-Jun)</th>
+                                <th>Q3 (Jul-Sep)</th>
+                                <th>Q4 (Oct-Dec)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+
+            <!-- FAQ Section -->
+            <section class="faq" style="margin-top: 60px;">
+                <h2 style="font-size: 1.5rem; color: #003b75; margin-bottom: 20px;">Frequently Asked Questions</h2>
+
+                <details>
+                    <summary>How is IRS interest calculated under §6621?</summary>
+                    <p>
+                        IRS underpayment interest is calculated using daily compounding under IRC §6622, based on
+                        quarterly interest rates published under IRC §6621(a)(2).
+                        The rate generally equals the federal short-term rate plus three percentage points and applies
+                        from the statutory due date of the tax until the payment date.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>Does IRS interest compound daily or annually?</summary>
+                    <p>
+                        IRS interest compounds daily, not annually.
+                        Daily compounding applies to underpayment interest, including interest charged on PFIC excess
+                        distributions reported on Form 8621.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>How is interest calculated on PFIC excess distributions?</summary>
+                    <p>
+                        For PFIC excess distributions under IRC §1291, interest is calculated on the deferred tax amount
+                        allocated to each prior year.
+                        Interest accrues from the statutory due date of the return for that year (without extensions)
+                        through the due date of the current return, using IRS daily compounded rates.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>Which part of Form 8621 includes the IRS interest charge?</summary>
+                    <p>
+                        IRS interest on PFIC excess distributions is reported on Form 8621, Line 16 as part of the
+                        “Interest Charge” calculation.
+                        The amount reflects interest computed under IRC §6621 and §6622 on the deferred tax.
+                    </p>
+                </details>
+
+                <details>
+                    <summary>Can this calculator be used to file Form 8621?</summary>
+                    <p>
+                        No.
+                        This calculator is provided for verification and informational purposes only.
+                        It does not prepare or file Form 8621, determine filing obligations, or replace professional tax
+                        advice.
+                    </p>
+                </details>
+            </section>
+
+            <p
+                style="font-size: 0.9rem; color: #94a3b8; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 20px;">
+                This calculator is provided for informational and verification purposes only
+                and does not constitute tax advice or a determination of filing obligations.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- =================================================================
+       4. Related Resources & Global Site Footer
+       ================================================================= -->
+    <div class="page-meta-footer" style="margin-top: 60px; border-top: 1px solid #e2e8f0; padding-top: 40px;">
+        <h3>Related Technical Resources</h3>
+        <div class="page-meta-footer-content">
+            <ul class="related-links">
+                <li><a href="../../articles/pfic-1291-interest-calculation-form-8621.html">➜ Interest Calculation Guide
+                        — Daily Compounding Explained</a></li>
+                <li><a href="../../self-preparing-pfic/">➜ Self-Preparation Hub — Form 8621 Resource Center</a></li>
+                <li><a href="../../form-8621-diy-calculation/">➜ DIY Filing Guide — Step-by-Step PFIC Preparation</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- FOOTER_START -->
+    <footer class="site-footer">
+        <div class="footer-nav">
+            <a href="/">Home</a>
+            <span>|</span>
+            <a href="/articles/">Articles</a>
+            <span>|</span>
+            <a href="/user-guide/">User Guide</a>
+            <span>|</span>
+            <a href="/legal/privacy-policy/">Privacy Policy</a>
+            <span>|</span>
+            <a href="/legal/disclaimer/">Legal Disclaimer</a>
+            <span>|</span>
+            <a href="mailto:pficxyz@gmail.com">Contact</a>
+        </div>
+
+        <p>© 2026 PFIC Calculator (pfic.xyz) — All rights reserved.</p>
+
+        <div class="taglist">
+            <a href="/" class="pfic-tag">PFIC Calculator</a>
+            <a href="/form-8621-diy-calculation/" class="pfic-tag">Form 8621 DIY</a>
+            <a href="/tools/irs-6621-interest-calculator/" class="pfic-tag">6621 Interest Calculator</a>
+            <a href="/articles/2025-form-8621-line-15e-split.html" class="pfic-tag">
+                2025 Form 8621 Update
+            </a>
+        </div>
+    </footer>
+    <!-- FOOTER_END -->
+    <script src="../../js/nav.js"></script>
+    <script src="calculator.js"></script>
+
+    <!-- Schema.org FAQ JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How is IRS interest calculated under §6621?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IRS underpayment interest is calculated using daily compounding under IRC §6622, based on quarterly interest rates published under IRC §6621(a)(2). The rate generally equals the federal short-term rate plus three percentage points and applies from the statutory due date of the tax until the payment date."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does IRS interest compound daily or annually?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IRS interest compounds daily, not annually. Daily compounding applies to underpayment interest, including interest charged on PFIC excess distributions reported on Form 8621."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is interest calculated on PFIC excess distributions?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For PFIC excess distributions under IRC §1291, interest is calculated on the deferred tax amount allocated to each prior year. Interest accrues from the statutory due date of the return for that year (without extensions) through the due date of the current return, using IRS daily compounded rates."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which part of Form 8621 includes the IRS interest charge?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "IRS interest on PFIC excess distributions is reported on Form 8621, Line 16 as part of the Interest Charge calculation. The amount reflects interest computed under IRC §6621 and §6622 on the deferred tax."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can this calculator be used to file Form 8621?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. This calculator is provided for verification and informational purposes only. It does not prepare or file Form 8621, determine filing obligations, or replace professional tax advice."
+          }
+        }
+      ]
+    }
+    </script>
+</body>
+
+</html>

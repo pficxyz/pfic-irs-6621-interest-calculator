@@ -1,0 +1,220 @@
+    /* Calculator Specific Variables inherited from site theme */
+    :root {
+        --calc-primary: #0066cc;
+        --calc-primary-hover: #003b75;
+        --calc-bg: #f8fbff;
+        --calc-border: #e2e8f0;
+        --calc-card-bg: #ffffff;
+    }
+
+    /* Card Container */
+    .calc-card {
+        background: var(--calc-card-bg);
+        border: 1px solid var(--calc-border);
+        border-radius: 8px;
+        padding: 32px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Grid Layout */
+    .calc-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 24px;
+        align-items: flex-end;
+    }
+
+    /* Form Elements */
+    .calc-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #475569;
+    }
+
+    .calc-input,
+    .calc-select {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 4px;
+        border: 1px solid #cbd5e1;
+        background: #fff;
+        color: #1e293b;
+        font-size: 1rem;
+        height: 48px;
+        line-height: normal;
+        box-sizing: border-box;
+        transition: border-color 0.2s;
+        font-family: inherit;
+    }
+
+    .calc-input:focus,
+    .calc-select:focus {
+        outline: none;
+        border-color: var(--calc-primary);
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    /* Readonly Output Field */
+    .calc-output-field {
+        background-color: #f0f9ff;
+        border-color: #bae6fd;
+        color: #003b75;
+        font-weight: 700;
+    }
+
+    /* Calculate Button */
+    .calc-btn {
+        display: inline-block;
+        width: 100%;
+        padding: 14px;
+        background: var(--calc-primary);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 10px;
+    }
+
+    .calc-btn:hover {
+        background: var(--calc-primary-hover);
+    }
+
+    /* Results Area */
+    .hidden {
+        display: none;
+    }
+
+    .result-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 1px solid var(--calc-border);
+        text-align: center;
+    }
+
+    .result-item-label {
+        font-size: 0.9rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+    }
+
+    .result-item-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--calc-primary-hover);
+    }
+
+    /* Detailed Table */
+    .details-table-container {
+        margin-top: 40px;
+        overflow-x: auto;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+    .details-table th {
+        background: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        padding: 12px;
+        text-align: left;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .details-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #334155;
+    }
+
+    .details-table tr:nth-child(even) {
+        background-color: #f8fafc;
+    }
+
+    @media (max-width: 768px) {
+        .calc-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Prevent grid items from expanding beyond 1fr due to internal content (like date pickers) */
+        .calc-grid>div {
+            min-width: 0;
+            width: 100%;
+        }
+
+        .item-year-allocated {
+            order: 1;
+        }
+
+        .item-year-return {
+            order: 2;
+        }
+
+        .item-due-date {
+            order: 3;
+        }
+
+        .item-payment-date {
+            order: 4;
+        }
+
+        .item-deferred-tax {
+            order: 5;
+        }
+
+        .item-accrual-factor {
+            order: 6;
+        }
+
+        .calc-card {
+            padding: 20px 16px;
+        }
+
+        .result-summary {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+
+        /* Ensure consistent height and font size on mobile */
+        .calc-input,
+        .calc-select {
+            height: 48px;
+            padding: 10px 12px;
+            font-size: 1rem;
+            width: 100%;
+            min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Adjust font size slightly for dates if they are in narrow grid cells */
+        #startDate,
+        #endDate {
+            font-size: 0.95rem;
+        }
+    }
+
+    /* Ensure inputs take full width without overflow */
+    .calc-input,
+    .calc-select {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
