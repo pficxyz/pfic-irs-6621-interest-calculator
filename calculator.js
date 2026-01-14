@@ -5,6 +5,7 @@
  */
 
 const IRS_RATES = {
+    2026: [0.07, 0.07, 0.00, 0.00],
     2025: [0.07, 0.07, 0.07, 0.07],
     2024: [0.08, 0.08, 0.08, 0.08],
     2023: [0.07, 0.07, 0.07, 0.08],
@@ -56,7 +57,7 @@ const DUE_DATE_MAP = {
     2011: "2012-04-17", 2012: "2013-04-15", 2013: "2014-04-15", 2014: "2015-04-15",
     2015: "2016-04-18", 2016: "2017-04-18", 2017: "2018-04-17", 2018: "2019-04-15",
     2019: "2020-07-15", 2020: "2021-05-17", 2021: "2022-04-18", 2022: "2023-04-18",
-    2023: "2024-04-15", 2024: "2025-04-15"
+    2023: "2024-04-15", 2024: "2025-04-15", 2025: "2026-04-15"
 };
 
 function isLeapYear(year) {
@@ -88,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
 
-    // Populate Allocated Year (1987 to 2024)
-    for (let y = 2024; y >= 1987; y--) {
+    // Populate Allocated Year (1987 to 2025)
+    for (let y = 2025; y >= 1987; y--) {
         const opt = document.createElement('option');
         opt.value = y; opt.textContent = y;
         taxableYearSelect.appendChild(opt);
@@ -101,8 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filingYearSelect.innerHTML = '';
         // Filing Year must be GREATER than Allocated Year
-        // We go up to 2024 since that's the latest return year we have rates/dates for
-        for (let y = 2024; y > selectedAllocYear; y--) {
+        // We go up to 2025 since that's the latest return year we have rates/dates for
+        for (let y = 2025; y > selectedAllocYear; y--) {
             const opt = document.createElement('option');
             opt.value = y; opt.textContent = y;
             filingYearSelect.appendChild(opt);
@@ -149,10 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
     endDateInput.addEventListener('change', () => performCalculation(true));
 
     // Set Initial Defaults
-    taxableYearSelect.value = "2023";
+    taxableYearSelect.value = "2024";
     // Manually set initial startDate instead of hardcoding
-    if (DUE_DATE_MAP["2023"]) {
-        startDateInput.value = DUE_DATE_MAP["2023"];
+    if (DUE_DATE_MAP["2024"]) {
+        startDateInput.value = DUE_DATE_MAP["2024"];
     }
 
     updateFilingYears(); // This populates filingYearSelect and triggers updateEndDate()
