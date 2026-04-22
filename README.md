@@ -4,9 +4,9 @@ This repository contains a lightweight, open-source, client-side calculator
 for computing interest under Internal Revenue Code §6621.
 
 An official hosted version of this calculator is available at:
-https://pfic.xyz/tools/irs-6621-interest-calculator/
+https://8621calculator.com/docs/irs-6621-interest-calculator/
 
-This project is maintained by pfic.xyz.
+This project is maintained by 8621calculator.com.
 
 ---
 
